@@ -25,7 +25,7 @@ const IndexPage = ({ data }) => (
           {book.title} - <small>{book.author.name}</small>
         </h2>
         <div>{book.summary}</div>
-        <Link to={`/book/${book.id}`}>Join conversation</Link>
+        <Link to={`/book-details/${book.id}`}>Join conversation</Link>
       </div>
     ))}
   </Layout>

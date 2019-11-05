@@ -20,11 +20,11 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
 
   const books = result.data.allBook.nodes;
 
-  books.forEach(book => {
+  books.forEach(book =>
     actions.createPage({
-      path: `/book/${book.id}`,
+      path: `/book-details/${book.id}`,
       component: require.resolve('./src/templates/book-details.js'),
       context: book,
-    });
-  });
+    })
+  );
 };
