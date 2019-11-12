@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, graphql } from 'gatsby';
 import Layout from '../components/layout';
+import Book from '../components/book';
 
 export const query = graphql`
   {
@@ -17,18 +18,19 @@ export const query = graphql`
   }
 `;
 
-const IndexPage = ({ data }) => (
+const Index = ({ data }) => (
   <Layout>
     {data.allBook.nodes.map(book => (
-      <div key={book.id}>
-        <h2>
-          {book.title} - <small>{book.author.name}</small>
-        </h2>
-        <div>{book.summary}</div>
+      <Book
+        key={book.id}
+        title={book.title}
+        summary={book.summary}
+        author={book.author.name}
+      >
         <Link to={`/book-details/${book.id}`}>Join conversation</Link>
-      </div>
+      </Book>
     ))}
   </Layout>
 );
 
-export default IndexPage;
+export default Index;
