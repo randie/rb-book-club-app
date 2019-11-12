@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link, graphql } from 'gatsby';
+import { graphql } from 'gatsby';
 import Layout from '../components/layout';
-import Book from '../components/book';
+import BookList from '../components/book-list';
 
 export const query = graphql`
   {
@@ -20,16 +20,7 @@ export const query = graphql`
 
 const Index = ({ data }) => (
   <Layout>
-    {data.allBook.nodes.map(book => (
-      <Book
-        key={book.id}
-        title={book.title}
-        summary={book.summary}
-        author={book.author.name}
-      >
-        <Link to={`/book-details/${book.id}`}>Join conversation</Link>
-      </Book>
-    ))}
+    <BookList books={data.allBook.nodes} />
   </Layout>
 );
 
