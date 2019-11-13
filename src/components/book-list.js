@@ -25,7 +25,7 @@ const BookList = ({ books }) => (
         key={book.id}
         title={book.title}
         summary={book.summary}
-        imageUrl={book.imageUrl}
+        imageUrl={book.localImage.publicURL}
         author={book.author.name}
       >
         <LinkButton>

@@ -6,7 +6,9 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
           id
           title
           summary
-          imageUrl
+          localImage {
+            publicURL
+          }
           author {
             name
           }

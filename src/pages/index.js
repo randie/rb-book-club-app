@@ -11,7 +11,9 @@ export default () => {
           id
           title
           summary
-          imageUrl
+          localImage {
+            publicURL
+          }
           author {
             name
           }
