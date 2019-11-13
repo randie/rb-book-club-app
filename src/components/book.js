@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const BookContainer = styled.section`
+  display: flex;
   border: 2px solid #ddd;
   border-radius: 8px;
   padding: 1rem;
@@ -11,8 +12,14 @@ const BookContainer = styled.section`
   h2 {
     small {
       font-weight: normal;
-      font-size: 1rem;
-      margin-left: 0.5rem;
+      font-size: 1.2rem;
+    }
+  }
+  img {
+    display: block;
+    max-width: 200px;
+    & + div {
+      margin-left: 1rem;
     }
   }
 `;
@@ -20,12 +27,15 @@ const BookContainer = styled.section`
 const Book = ({ title, summary, author, imageUrl, children }) => (
   <BookContainer>
     <img src={imageUrl} alt="book cover" />
-    <h2>
-      {title}
-      <small>by {author}</small>
-    </h2>
-    <p>{summary}</p>
-    {children}
+    <div>
+      <h2>
+        {title}
+        <br />
+        <small>{author}</small>
+      </h2>
+      <p>{summary}</p>
+      {children}
+    </div>
   </BookContainer>
 );
 
