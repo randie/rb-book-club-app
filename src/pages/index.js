@@ -10,10 +10,11 @@ export default () => {
         nodes {
           id
           title
+          summary
+          imageUrl
           author {
             name
           }
-          summary
         }
       }
     }

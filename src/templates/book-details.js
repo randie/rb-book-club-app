@@ -8,6 +8,7 @@ const BookDetails = ({ pageContext: book }) => {
       <Book
         title={book.title}
         summary={book.summary}
+        imageUrl={book.imageUrl}
         author={book.author.name}
       />
     </Layout>

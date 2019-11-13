@@ -17,8 +17,9 @@ const BookContainer = styled.section`
   }
 `;
 
-const Book = ({ title, summary, author, children }) => (
+const Book = ({ title, summary, author, imageUrl, children }) => (
   <BookContainer>
+    <img src={imageUrl} alt="book cover" />
     <h2>
       {title}
       <small>by {author}</small>

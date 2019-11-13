@@ -5,10 +5,11 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
         nodes {
           id
           title
+          summary
+          imageUrl
           author {
             name
           }
-          summary
         }
       }
     }
