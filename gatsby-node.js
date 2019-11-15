@@ -7,7 +7,11 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
           title
           summary
           localImage {
-            publicURL
+            childImageSharp {
+              fixed(width: 200) {
+                src
+              }
+            }
           }
           author {
             name

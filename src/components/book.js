@@ -1,4 +1,5 @@
 import React from 'react';
+import Img from 'gatsby-image';
 import styled from 'styled-components';
 
 const BookContainer = styled.div`
@@ -6,9 +7,6 @@ const BookContainer = styled.div`
   border: 2px solid #ddd;
   border-radius: 8px;
   padding: 1rem;
-  & + div {
-    margin-top: 0.5rem;
-  }
   header {
     margin-bottom: 1.2rem;
   }
@@ -18,17 +16,19 @@ const BookContainer = styled.div`
       font: 1.1rem Arial, Helvetica, sans-serif;
     }
   }
-  img {
-    display: block;
-    max-width: 200px;
-    max-height: 300px;
-    margin-right: 1rem;
+  & + div {
+    margin-top: 0.5rem;
+  }
+  div + div {
+    margin-left: 1rem;
   }
 `;
 
 const Book = ({ title, summary, author, imageUrl, children }) => (
   <BookContainer>
-    <img src={imageUrl} alt="book cover" />
+    <div>
+      <Img fixed={imageUrl} />
+    </div>
     <div>
       <header>
         <h2>{title}</h2>

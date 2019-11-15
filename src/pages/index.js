@@ -12,7 +12,11 @@ export default () => {
           title
           summary
           localImage {
-            publicURL
+            childImageSharp {
+              fixed(width: 200) {
+                ...GatsbyImageSharpFixed
+              }
+            }
           }
           author {
             name

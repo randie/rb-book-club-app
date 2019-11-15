@@ -8,7 +8,7 @@ const BookDetails = ({ pageContext: book }) => {
       <Book
         title={book.title}
         summary={book.summary}
-        imageUrl={book.localImage.publicURL}
+        imageUrl={book.localImage.childImageSharp.fixed}
         author={book.author.name}
       />
     </Layout>
