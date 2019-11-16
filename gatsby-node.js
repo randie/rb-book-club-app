@@ -4,18 +4,6 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
       allBook {
         nodes {
           id
-          title
-          summary
-          localImage {
-            childImageSharp {
-              fixed(width: 200) {
-                src
-              }
-            }
-          }
-          author {
-            name
-          }
         }
       }
     }
@@ -31,7 +19,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     actions.createPage({
       path: `/book-details/${book.id}`,
       component: require.resolve('./src/templates/book-details.js'),
-      context: book,
+      context: { bookId: book.id },
     })
   );
 };
