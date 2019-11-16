@@ -23,6 +23,8 @@ export const query = graphql`
   }
 `;
 
+// The result of the exported page query (above)
+// will be available in props.data
 export default ({ data: { book } }) => (
   <Layout>
     <Book
