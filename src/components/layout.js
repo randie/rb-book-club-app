@@ -8,7 +8,7 @@ import Header from './header';
 import '../styles/layout.css';
 
 const Layout = ({ children }) => {
-  const currentUser = useCurrentUser();
+  const { currentUser, isLoading } = useCurrentUser();
 
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
@@ -21,7 +21,7 @@ const Layout = ({ children }) => {
   `);
 
   return (
-    <FirebaseContext.Provider value={{ firebase, currentUser }}>
+    <FirebaseContext.Provider value={{ firebase, currentUser, isLoading }}>
       <Header siteTitle={data.site.siteMetadata.title} />
       <div
         style={{

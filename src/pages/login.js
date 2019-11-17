@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'gatsby';
+import { navigate } from 'gatsby';
 import Layout from '../components/layout';
 import firebase from '../firebase';
 
@@ -19,7 +19,7 @@ const Login = () => {
 
   function handleSubmit(event) {
     event.preventDefault();
-    firebase.login({ email, password });
+    firebase.login({ email, password }).then(() => navigate('/')); // TODO: .catch()
   }
 
   return (
