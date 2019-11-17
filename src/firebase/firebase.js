@@ -31,7 +31,7 @@ class Firebase {
     return await newUser.user.updateProfile({ displayName });
   }
 
-  async login(email, password) {
+  async login({ email, password }) {
     return await this.auth.signInWithEmailAndPassword(email, password);
   }
 

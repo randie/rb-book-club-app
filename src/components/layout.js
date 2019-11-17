@@ -1,18 +1,15 @@
-/**
- * Layout component that queries for data
- * with Gatsby's useStaticQuery component
- *
- * See: https://www.gatsbyjs.org/docs/use-static-query/
- */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useStaticQuery, graphql } from 'gatsby';
+import firebase, { FirebaseContext } from '../firebase';
+import useCurrentUser from '../hooks/use-current-user';
 
 import Header from './header';
 import '../styles/layout.css';
 
 const Layout = ({ children }) => {
+  const currentUser = useCurrentUser();
+
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
       site {
@@ -24,7 +21,7 @@ const Layout = ({ children }) => {
   `);
 
   return (
-    <>
+    <FirebaseContext.Provider value={{ firebase, currentUser }}>
       <Header siteTitle={data.site.siteMetadata.title} />
       <div
         style={{
@@ -35,15 +32,8 @@ const Layout = ({ children }) => {
         }}
       >
         <main>{children}</main>
-        {/*
-        <footer>
-          © {new Date().getFullYear()}, Built with
-          {` `}
-          <a href="https://www.gatsbyjs.org">Gatsby</a>
-        </footer>
-        */}
       </div>
-    </>
+    </FirebaseContext.Provider>
   );
 };
 

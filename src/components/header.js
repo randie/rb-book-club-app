@@ -1,6 +1,7 @@
+import React from 'react';
 import { Link } from 'gatsby';
 import PropTypes from 'prop-types';
-import React from 'react';
+import { FirebaseContext } from '../firebase';
 
 const Header = ({ siteTitle }) => (
   <header
@@ -27,6 +28,12 @@ const Header = ({ siteTitle }) => (
           {siteTitle}
         </Link>
       </h1>
+      <FirebaseContext.Consumer>
+        {props => {
+          console.log({ props });
+          return null;
+        }}
+      </FirebaseContext.Consumer>
     </div>
   </header>
 );
