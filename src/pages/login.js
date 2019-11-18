@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { navigate } from 'gatsby';
-import Layout from '../components/layout';
 import { FirebaseContext } from '../firebase';
 import useCurrentUser from '../hooks/use-current-user';
 
@@ -25,18 +24,16 @@ const Login = () => {
   }
 
   return (
-    <Layout>
-      <form onSubmit={handleSubmit}>
-        <input type="email" placeholder="Email" value={email} onChange={handleEmailChange} />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={handlePasswordChange}
-        />
-        <button type="submit">Login</button>
-      </form>
-    </Layout>
+    <form onSubmit={handleSubmit}>
+      <input type="email" placeholder="Email" value={email} onChange={handleEmailChange} />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={handlePasswordChange}
+      />
+      <button type="submit">Login</button>
+    </form>
   );
 };
 

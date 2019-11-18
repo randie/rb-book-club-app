@@ -1,17 +1,13 @@
-import app from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/analytics';
-import 'firebase/firestore';
 import firebaseConfig from './config';
 
 let instance = null;
 const timestamp = Symbol();
 
 class Firebase {
-  constructor() {
+  constructor(app) {
     if (!instance) {
       app.initializeApp(firebaseConfig);
-      app.analytics();
+      //app.analytics();
 
       this.auth = app.auth();
       this.db = app.firestore();
@@ -44,6 +40,4 @@ class Firebase {
   }
 }
 
-const firebase = new Firebase();
-
-export default firebase;
+export default app => new Firebase(app);

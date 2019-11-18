@@ -1,6 +1,5 @@
 import React from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
-import Layout from '../components/layout';
 import BookList from '../components/book-list';
 
 export default () => {
@@ -26,9 +25,5 @@ export default () => {
     }
   `);
 
-  return (
-    <Layout>
-      <BookList books={data.allBook.nodes} />
-    </Layout>
-  );
+  return <BookList books={data.allBook.nodes} />;
 };
