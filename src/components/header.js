@@ -55,7 +55,9 @@ const Header = ({ siteTitle }) => {
         {isLoading ? null : (
           <>
             {!currentUser ? (
-              <Link to="/login">Login</Link>
+              <div>
+                <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
+              </div>
             ) : (
               <div>
                 {`${currentUser.email} | `}
