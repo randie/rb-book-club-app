@@ -1,5 +1,16 @@
 import { useEffect, useState } from 'react';
-import getFirebase, { loadFirebaseDependencies } from '../firebase';
+import getFirebase from '../firebase';
+
+const getFirebaseDependencies = () =>
+  Promise.all([
+    import('firebase/app'),
+    import('firebase/auth'),
+    import('firebase/firestore'),
+    // import('firebase/functions'),
+    // import('firebase/storage'),
+  ]).then(dependencies => {
+    return dependencies[0];
+  });
 
 function useAuth() {
   const [firebase, setFirebase] = useState(null);
@@ -9,7 +20,7 @@ function useAuth() {
   useEffect(() => {
     let unsubscribe;
 
-    loadFirebaseDependencies().then(app => {
+    getFirebaseDependencies().then(app => {
       const firebaseInstance = getFirebase(app);
       setFirebase(firebaseInstance);
 
