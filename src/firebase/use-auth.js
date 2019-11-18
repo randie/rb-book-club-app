@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import getFirebase, { loadFirebaseDependencies } from '../firebase';
 
-function useCurrentUser(params) {
+function useAuth() {
   const [firebase, setFirebase] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
@@ -25,4 +25,4 @@ function useCurrentUser(params) {
   return { firebase, isLoading, currentUser };
 }
 
-export default useCurrentUser;
+export default useAuth;

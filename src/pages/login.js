@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { navigate } from 'gatsby';
-import { FirebaseContext } from '../firebase';
-import useCurrentUser from '../hooks/use-current-user';
+import { FirebaseContext, useAuth } from '../firebase';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { firebase } = useCurrentUser(FirebaseContext);
+  const { firebase } = useAuth(FirebaseContext);
 
   function handleEmailChange(event) {
     event.persist();

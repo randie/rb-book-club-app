@@ -1,14 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useStaticQuery, graphql } from 'gatsby';
-import { FirebaseContext } from '../firebase';
-import useCurrentUser from '../hooks/use-current-user';
+import { FirebaseContext, useAuth } from '../firebase';
 
 import Header from './header';
 import '../styles/layout.css';
 
 const Layout = ({ children }) => {
-  const { firebase, currentUser, isLoading } = useCurrentUser();
+  const { firebase, currentUser, isLoading } = useAuth();
 
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
