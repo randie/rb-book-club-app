@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Link, navigate } from 'gatsby';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import firebase, { FirebaseContext } from '../firebase';
+import { FirebaseContext } from '../firebase';
 
 const HeaderContainer = styled.header`
   background: rebeccapurple;
@@ -40,7 +40,7 @@ const LogoutLink = styled.span`
 `;
 
 const Header = ({ siteTitle }) => {
-  const { currentUser, isLoading } = useContext(FirebaseContext);
+  const { firebase, currentUser, isLoading } = useContext(FirebaseContext);
 
   function handleLogoutClick() {
     firebase.logout().then(() => navigate('/login'));

@@ -13,7 +13,7 @@ function useCurrentUser(params) {
     return () => unsubscribe();
   }, []);
 
-  return { isLoading, currentUser };
+  return { firebase, isLoading, currentUser };
 }
 
 export default useCurrentUser;
