@@ -4,6 +4,34 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import firebase, { FirebaseContext } from '../firebase';
 
+const HeaderContainer = styled.header`
+  background: rebeccapurple;
+  margin-bottom: 1.45rem;
+  color: white;
+`;
+
+const HeaderContent = styled.div`
+  margin: 0 auto;
+  max-width: 960px;
+  padding: 1.45rem 1.0875rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  > h1 {
+    margin: 0;
+    > a:hover {
+      text-decoration: none;
+    }
+  }
+  a {
+    color: white;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
 const LogoutLink = styled.span`
   cursor: pointer;
   &:hover {
@@ -19,46 +47,15 @@ const Header = ({ siteTitle }) => {
   }
 
   return (
-    <header
-      style={{
-        background: `rebeccapurple`,
-        marginBottom: `1.45rem`,
-        color: 'white',
-      }}
-    >
-      <div
-        style={{
-          margin: `0 auto`,
-          maxWidth: 960,
-          padding: `1.45rem 1.0875rem`,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <h1 style={{ margin: 0 }}>
-          <Link
-            to="/"
-            style={{
-              color: `white`,
-              textDecoration: `none`,
-            }}
-          >
-            {siteTitle}
-          </Link>
+    <HeaderContainer>
+      <HeaderContent>
+        <h1>
+          <Link to="/">{siteTitle}</Link>
         </h1>
         {isLoading ? null : (
           <>
             {!currentUser ? (
-              <Link
-                to="/login"
-                style={{
-                  color: `white`,
-                  textDecoration: `none`,
-                }}
-              >
-                Login
-              </Link>
+              <Link to="/login">Login</Link>
             ) : (
               <div>
                 {`${currentUser.email} | `}
@@ -67,8 +64,8 @@ const Header = ({ siteTitle }) => {
             )}
           </>
         )}
-      </div>
-    </header>
+      </HeaderContent>
+    </HeaderContainer>
   );
 };
 
