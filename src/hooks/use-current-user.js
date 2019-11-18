@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import getFirebase from '../firebase';
-import loadFirebaseDependencies from '../firebase/loadFirebaseDependencies';
+import getFirebase, { loadFirebaseDependencies } from '../firebase';
 
 function useCurrentUser(params) {
   const [firebase, setFirebase] = useState(null);
