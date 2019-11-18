@@ -17,12 +17,6 @@ const HeaderContent = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  > h1 {
-    margin: 0;
-    > a:hover {
-      text-decoration: none;
-    }
-  }
   a {
     color: white;
     text-decoration: none;
@@ -30,12 +24,28 @@ const HeaderContent = styled.div`
       text-decoration: underline;
     }
   }
+  > h1 {
+    margin: 0;
+    > a:hover {
+      text-decoration: none;
+    }
+  }
+  > div {
+    text-align: right;
+  }
 `;
 
 const LogoutLink = styled.span`
   cursor: pointer;
   &:hover {
     text-decoration: underline;
+  }
+`;
+
+const Divider = styled.span`
+  margin: 0 0.4rem;
+  &::before {
+    content: '|';
   }
 `;
 
@@ -53,18 +63,20 @@ const Header = ({ siteTitle }) => {
           <Link to="/">{siteTitle}</Link>
         </h1>
         {isLoading ? null : (
-          <>
+          <div>
             {!currentUser ? (
-              <div>
-                <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
-              </div>
+              <>
+                <Link to="/login">Login</Link>
+                <Divider />
+                <Link to="/register">Register</Link>
+              </>
             ) : (
-              <div>
-                {`${currentUser.email} | `}
+              <>
+                <div>{`${currentUser.email}`}</div>
                 <LogoutLink onClick={handleLogoutClick}>Logout</LogoutLink>
-              </div>
+              </>
             )}
-          </>
+          </div>
         )}
       </HeaderContent>
     </HeaderContainer>
