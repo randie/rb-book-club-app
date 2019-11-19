@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { navigate } from 'gatsby';
 import { FirebaseContext, useAuth } from '../firebase';
+import { Form, Input, Button } from '../components';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -23,16 +24,18 @@ const Login = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="email" placeholder="Email" value={email} onChange={handleEmailChange} />
-      <input
+    <Form onSubmit={handleSubmit}>
+      <Input type="email" placeholder="Email" value={email} onChange={handleEmailChange} />
+      <Input
         type="password"
         placeholder="Password"
         value={password}
         onChange={handlePasswordChange}
       />
-      <button type="submit">Login</button>
-    </form>
+      <Button type="submit" block>
+        Login
+      </Button>
+    </Form>
   );
 };
 
