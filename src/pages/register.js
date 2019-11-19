@@ -1,14 +1,26 @@
-import React, { useState } from 'react';
-import { FirebaseContext, useAuth } from '../firebase';
+import React, { useState, useContext } from 'react';
+import { navigate } from 'gatsby';
+import { FirebaseContext } from '../firebase';
 import { Form, Input, Button } from '../components';
 
 const Register = () => {
-  const { firebase } = useAuth(FirebaseContext);
+  const { firebase } = useContext(FirebaseContext);
   const [formValues, setFormValues] = useState({
     email: '',
     password: '',
     confirmPassword: '',
   });
+  const { email, password, confirmPassword } = formValues;
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    // TODO: form validation (for now just compare password and confirmPassword)
+    if (password === confirmPassword) {
+      const displayName = email.substring(0, email.indexOf('@')); // TODO: add username input field to form
+      firebase.register({ email, password, displayName }).then(() => navigate('/')); // TODO: .catch()
+    }
+  }
 
   function handleInputChange(event) {
     event.persist();
@@ -17,13 +29,6 @@ const Register = () => {
       [event.target.name]: event.target.value,
     }));
   }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    //firebase.register({ email, password, displayName: 'foobar' }).then(() => navigate('/')); // TODO: .catch()
-  }
-
-  const { email, password, confirmPassword } = formValues;
 
   return (
     <Form onSubmit={handleSubmit}>

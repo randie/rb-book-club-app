@@ -72,7 +72,7 @@ const Header = ({ siteTitle }) => {
               </>
             ) : (
               <>
-                <div>{`${currentUser.email}`}</div>
+                <div>{`${currentUser.displayName || currentUser.email}`}</div>
                 <LogoutLink onClick={handleLogoutClick}>Logout</LogoutLink>
               </>
             )}
