@@ -68,9 +68,6 @@ const Register = () => {
         Register
       </Button>
       {errorMessage && <Message error>{`ERROR! ${errorMessage}`}</Message>}
-
-      {/* TODO: remove, for debugging only */}
-      {(email || password || confirmPassword) && <pre>{JSON.stringify(formValues, null, 2)}</pre>}
     </Form>
   );
 };
