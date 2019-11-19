@@ -42,7 +42,7 @@ const Login = () => {
       <Button type="submit" block>
         Login
       </Button>
-      {errorMessage && <Message error>{errorMessage}</Message>}
+      {errorMessage && <Message error>{`ERROR! ${errorMessage}`}</Message>}
     </Form>
   );
 };
