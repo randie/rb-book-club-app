@@ -17,9 +17,10 @@ const Register = () => {
     event.preventDefault();
 
     if (password === confirmPassword) {
-      const displayName = email.substring(0, email.indexOf('@')); // TODO: add username input field to form
+      const username = email.substring(0, email.indexOf('@')); // TODO: add username input field to form
+      //const displayName = username.charAt(0).toUpperCase() + username.slice(1);
       firebase
-        .register({ email, password, displayName })
+        .register({ email, password, username })
         .then(() => navigate('/'))
         .catch(error => setErrorMessage(error.message));
     } else {
