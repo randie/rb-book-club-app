@@ -38,6 +38,13 @@ class Firebase {
   resetPassword(email) {
     return this.auth.sendPasswordResetEmail(email);
   }
+
+  getUserProfile(userId) {
+    return this.db
+      .collection('profiles')
+      .where('userId', '==', userId)
+      .get();
+  }
 }
 
 export default app => new Firebase(app);

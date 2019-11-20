@@ -25,8 +25,18 @@ function useAuth() {
       setFirebase(firebaseInstance);
 
       unsubscribe = firebaseInstance.auth.onAuthStateChanged(user => {
-        setCurrentUser(user || null);
-        setIsLoading(false);
+        if (!user) {
+          setCurrentUser(null);
+          setIsLoading(false);
+        } else {
+          firebaseInstance.getUserProfile(user.uid).then(profile => {
+            setCurrentUser({
+              ...user,
+              username: profile.empty ? null : profile.docs[0].id,
+            });
+            setIsLoading(false);
+          });
+        }
       });
     });
 

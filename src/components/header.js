@@ -51,6 +51,8 @@ const Divider = styled.span`
 
 const Header = ({ siteTitle }) => {
   const { firebase, currentUser, isLoading } = useContext(FirebaseContext);
+  const name =
+    currentUser && (currentUser.displayName || currentUser.username || currentUser.email);
 
   function handleLogoutClick() {
     firebase.logout().then(() => navigate('/login'));
@@ -72,7 +74,8 @@ const Header = ({ siteTitle }) => {
               </>
             ) : (
               <>
-                <div>{`${currentUser.displayName || currentUser.email}`}</div>
+                Hello, {`${name}`}!
+                <Divider />
                 <LogoutLink onClick={handleLogoutClick}>Logout</LogoutLink>
               </>
             )}

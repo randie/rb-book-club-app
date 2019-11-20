@@ -28,6 +28,13 @@ module.exports = {
               name: doc.name,
             }),
           },
+          {
+            type: 'Profile',
+            collection: 'profiles',
+            map: doc => ({
+              userId: doc.userId,
+            }),
+          },
         ],
       },
     },
