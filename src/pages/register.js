@@ -7,19 +7,19 @@ const Register = () => {
   const { firebase } = useContext(FirebaseContext);
   const [errorMessage, setErrorMessage] = useState('');
   const [formValues, setFormValues] = useState({
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
-  const { email, password, confirmPassword } = formValues;
+  const { username, email, password, confirmPassword } = formValues;
 
   function handleSubmit(event) {
     event.preventDefault();
 
     if (password === confirmPassword) {
-      const username = email.substring(0, email.indexOf('@')); // TODO: add username input field to form
       firebase
-        .register({ email, password, username })
+        .register({ username, email, password })
         .then(() => navigate('/'))
         .catch(error => setErrorMessage(error.message));
     } else {
@@ -38,6 +38,14 @@ const Register = () => {
 
   return (
     <Form onSubmit={handleSubmit}>
+      <Input
+        type="username"
+        name="username"
+        value={username}
+        placeholder="Username"
+        required
+        onChange={handleInputChange}
+      />
       <Input
         type="email"
         name="email"
