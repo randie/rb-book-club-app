@@ -54,6 +54,14 @@ class Firebase {
     if (profile.empty) return null;
     return profile.docs[0].id;
   }
+
+  subscribeToComments(bookId, callback) {
+    const bookRef = this.db.collection('books').doc(bookId);
+    return this.db
+      .collection('comments')
+      .where('book', '==', bookRef)
+      .onSnapshot(callback);
+  }
 }
 
 export default app => new Firebase(app);
