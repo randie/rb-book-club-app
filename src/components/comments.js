@@ -17,15 +17,18 @@ const CommentsSection = styled.section`
 `;
 
 export default ({ firebase, bookId }) => {
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState(null);
 
   useEffect(() => {
     const unsubscribe = firebase.subscribeToComments(bookId, snapshot => {
-      const c = [];
+      const snapshotComments = [];
+
+      // NB: this is firestore's forEeach() not Array.prototype.forEach()
       snapshot.forEach(doc => {
-        c.push({ id: doc.id, ...doc.data() });
+        snapshotComments.push({ id: doc.id, ...doc.data() });
       });
-      setComments(c);
+
+      setComments(snapshotComments.length > 0 ? snapshotComments : null);
     });
 
     return () => unsubscribe();
@@ -41,20 +44,22 @@ export default ({ firebase, bookId }) => {
   }
   */
   return (
-    <CommentsSection>
-      <h3>Comments</h3>
-      <ul>
-        {comments.map(({ id, username, date, text }) => {
-          return (
-            <li key={id}>
-              <div>
-                <strong>{username}</strong> {date && date.toDate().toLocaleString()}
-              </div>
-              <div>{text}</div>
-            </li>
-          );
-        })}
-      </ul>
-    </CommentsSection>
+    comments && (
+      <CommentsSection>
+        <h3>Comments</h3>
+        <ul>
+          {comments.map(({ id, username, date, text }) => {
+            return (
+              <li key={id}>
+                <div>
+                  <strong>{username}</strong> {date && date.toDate().toLocaleString()}
+                </div>
+                <div>{text}</div>
+              </li>
+            );
+          })}
+        </ul>
+      </CommentsSection>
+    )
   );
 };
