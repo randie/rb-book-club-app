@@ -22,10 +22,8 @@ class Firebase {
     return this[timestamp];
   }
 
-  async register({ email, password, username = '', displayName = '' }) {
-    console.log('>>>', { email, password, username, displayName });
+  async register({ email, password, username = '' }) {
     const newUser = await this.auth.createUserWithEmailAndPassword(email, password);
-    //await newUser.user.updateProfile({ displayName });
     return await this.db
       .collection('profiles')
       .doc(username)
