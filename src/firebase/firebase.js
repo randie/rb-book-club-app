@@ -39,11 +39,17 @@ class Firebase {
     return this.auth.sendPasswordResetEmail(email);
   }
 
-  getUserProfile(userId) {
+  getProfile(userId) {
     return this.db
       .collection('profiles')
       .where('userId', '==', userId)
       .get();
+  }
+
+  async getUsername(userId) {
+    const profile = await this.getProfile(userId);
+    if (profile.empty) return null;
+    return profile.docs[0].id;
   }
 }
 

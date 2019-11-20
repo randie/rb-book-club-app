@@ -24,19 +24,14 @@ function useAuth() {
       const firebaseInstance = getFirebase(app);
       setFirebase(firebaseInstance);
 
-      unsubscribe = firebaseInstance.auth.onAuthStateChanged(user => {
+      unsubscribe = firebaseInstance.auth.onAuthStateChanged(async user => {
         if (!user) {
           setCurrentUser(null);
-          setIsLoading(false);
         } else {
-          firebaseInstance.getUserProfile(user.uid).then(profile => {
-            setCurrentUser({
-              ...user,
-              username: profile.empty ? null : profile.docs[0].id,
-            });
-            setIsLoading(false);
-          });
+          const username = await firebaseInstance.getUsername(user.uid);
+          setCurrentUser({ ...user, username });
         }
+        setIsLoading(false);
       });
     });
 
