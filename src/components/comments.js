@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Input } from './input';
+import { Button } from './button';
 
 const CommentsSection = styled.section`
   margin-top: 1rem;
@@ -16,8 +18,16 @@ const CommentsSection = styled.section`
   }
 `;
 
+const CommentForm = styled.form`
+  display: flex;
+  margin-bottom: 1rem;
+  ${Input} {
+    margin: 0 0.4rem 0 0;
+  }
+`;
+
 export default ({ firebase, bookId }) => {
-  const [comments, setComments] = useState(null);
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     const unsubscribe = firebase.subscribeToComments(bookId, snapshot => {
@@ -28,11 +38,16 @@ export default ({ firebase, bookId }) => {
         snapshotComments.push({ id: doc.id, ...doc.data() });
       });
 
-      setComments(snapshotComments.length > 0 ? snapshotComments : null);
+      setComments(snapshotComments);
     });
 
     return () => unsubscribe();
   }, [firebase, bookId]);
+
+  function handleCommentSubmit(event) {
+    event.preventDefault();
+    window.alert('FYI: Comment submission is not implemented yet');
+  }
 
   /* Sample comment data
   {
@@ -44,22 +59,24 @@ export default ({ firebase, bookId }) => {
   }
   */
   return (
-    comments && (
-      <CommentsSection>
-        <h3>Comments</h3>
-        <ul>
-          {comments.map(({ id, username, date, text }) => {
-            return (
-              <li key={id}>
-                <div>
-                  <strong>{username}</strong> {date && date.toDate().toLocaleString()}
-                </div>
-                <div>{text}</div>
-              </li>
-            );
-          })}
-        </ul>
-      </CommentsSection>
-    )
+    <CommentsSection>
+      <h3>Comments</h3>
+      <CommentForm onSubmit={handleCommentSubmit}>
+        <Input type="text" placeholder="Write your comment here" />
+        <Button>Post Comment</Button>
+      </CommentForm>
+      <ul>
+        {comments.map(({ id, username, date, text }) => {
+          return (
+            <li key={id}>
+              <div>
+                <strong>{username}</strong> {date && date.toDate().toLocaleString()}
+              </div>
+              <div>{text}</div>
+            </li>
+          );
+        })}
+      </ul>
+    </CommentsSection>
   );
 };
