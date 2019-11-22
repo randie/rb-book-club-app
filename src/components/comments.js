@@ -59,7 +59,7 @@ export default ({ firebase, bookId }) => {
   {
     id: "HTkjRbmTvggVB7ioIJZA",
     book: DocumentReference,
-    date: Timestamp,
+    dateCreated: Timestamp,
     text: "blah blah blah",
     username: "yoda"
   }
@@ -77,11 +77,12 @@ export default ({ firebase, bookId }) => {
         <Button type="submit">Post Comment</Button>
       </CommentForm>
       <ul>
-        {comments.map(({ id, username, date, text }) => {
+        {comments.map(({ id, username, dateCreated, text }) => {
           return (
             <li key={id}>
               <div>
-                <strong>{username}</strong> {date.toDate().toLocaleString()}
+                <strong>{username}</strong>{' '}
+                {dateCreated.toDate().toLocaleString()}
               </div>
               <div>{text}</div>
             </li>

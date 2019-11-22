@@ -23,7 +23,7 @@ exports.postComment = functions.https.onCall((data, context) => {
         book: db.collection('books').doc(data.bookId),
         text: data.text,
         username: snapshot.docs[0].id,
-        date: new Date(),
+        dateCreated: new Date(),
       })
     );
 });
