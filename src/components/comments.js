@@ -28,6 +28,7 @@ const CommentForm = styled.form`
 
 export default ({ firebase, bookId }) => {
   const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState('');
 
   useEffect(() => {
     const unsubscribe = firebase.subscribeToComments(bookId, snapshot => {
@@ -44,9 +45,14 @@ export default ({ firebase, bookId }) => {
     return () => unsubscribe();
   }, [firebase, bookId]);
 
+  function handleInputChange(event) {
+    event.persist();
+    setCommentText(event.target.value);
+  }
+
   function handleCommentSubmit(event) {
     event.preventDefault();
-    window.alert('FYI: Comment submission is not implemented yet');
+    firebase.postComment(bookId, commentText);
   }
 
   /* Sample comment data
@@ -62,15 +68,20 @@ export default ({ firebase, bookId }) => {
     <CommentsSection>
       <h3>Comments</h3>
       <CommentForm onSubmit={handleCommentSubmit}>
-        <Input type="text" placeholder="Write your comment here" />
-        <Button>Post Comment</Button>
+        <Input
+          type="text"
+          placeholder="Write your comment here"
+          value={commentText}
+          onChange={handleInputChange}
+        />
+        <Button type="submit">Post Comment</Button>
       </CommentForm>
       <ul>
         {comments.map(({ id, username, date, text }) => {
           return (
             <li key={id}>
               <div>
-                <strong>{username}</strong> {date && date.toDate().toLocaleString()}
+                <strong>{username}</strong> {date.toDate().toLocaleString()}
               </div>
               <div>{text}</div>
             </li>

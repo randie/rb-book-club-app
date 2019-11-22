@@ -9,7 +9,7 @@ module.exports = {
     {
       resolve: 'gatsby-firesource',
       options: {
-        credential: require('./firebase.json'),
+        credential: require('./src/firebase/firebase.json'),
         types: [
           {
             type: 'Book',

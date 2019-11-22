@@ -11,6 +11,9 @@ class Firebase {
 
       this.auth = app.auth();
       this.db = app.firestore();
+      this.functions = app.functions();
+      this.storage = app.storage();
+
       this[timestamp] = Date.now();
 
       instance = this;
@@ -23,7 +26,10 @@ class Firebase {
   }
 
   async register({ email, password, username = '' }) {
-    const newUser = await this.auth.createUserWithEmailAndPassword(email, password);
+    const newUser = await this.auth.createUserWithEmailAndPassword(
+      email,
+      password
+    );
     return this.db
       .collection('profiles')
       .doc(username)
@@ -61,6 +67,11 @@ class Firebase {
       .collection('comments')
       .where('book', '==', bookRef)
       .onSnapshot(callback);
+  }
+
+  postComment(bookId, text) {
+    const postCommentCallable = this.functions.httpsCallable('postComment');
+    return postCommentCallable({ bookId, text });
   }
 }
 

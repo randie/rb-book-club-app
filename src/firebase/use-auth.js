@@ -6,8 +6,8 @@ const getFirebaseDependencies = () =>
     import('firebase/app'),
     import('firebase/auth'),
     import('firebase/firestore'),
-    // import('firebase/functions'),
-    // import('firebase/storage'),
+    import('firebase/functions'),
+    import('firebase/storage'),
   ]).then(dependencies => {
     return dependencies[0];
   });

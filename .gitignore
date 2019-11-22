@@ -70,4 +70,6 @@ yarn-error.log
 
 # firebase
 firebase.json
+/server/firebase.json
+/src/firebase/firebase.json
 /src/firebase/config.js
