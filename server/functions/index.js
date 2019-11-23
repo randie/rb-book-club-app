@@ -12,18 +12,59 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 
 exports.postComment = functions.https.onCall((data, context) => {
+  const validCommentData = { bookId: 'string', text: 'string' };
   const db = admin.firestore();
-  return db
-    .collection('profiles')
-    .where('userId', '==', context.auth.uid) // uid of the currently logged in user
-    .limit(1)
-    .get()
-    .then(snapshot =>
-      db.collection('comments').add({
-        book: db.collection('books').doc(data.bookId),
-        text: data.text,
-        username: snapshot.docs[0].id,
-        dateCreated: new Date(),
-      })
-    );
+
+  return (
+    isAuthenticatedUser(context) &&
+    isValidData(data, validCommentData) &&
+    db
+      .collection('profiles')
+      .where('userId', '==', context.auth.uid) // uid of the currently logged in user
+      .limit(1)
+      .get()
+      .then(snapshot =>
+        db.collection('comments').add({
+          book: db.collection('books').doc(data.bookId),
+          text: data.text,
+          username: snapshot.docs[0].id,
+          dateCreated: new Date(),
+        })
+      )
+    // TODO: catch and handle errors
+  );
 });
+
+function isAuthenticatedUser(context) {
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      'unauthenticated',
+      'ERROR! User is not logged in.'
+    );
+  }
+  return true;
+}
+
+function isValidData(data, validData) {
+  if (Object.keys(data).length !== Object.keys(validData).length) {
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      'Data contains invalid number of properties'
+    );
+  }
+  Object.keys(data).forEach(key => {
+    if (!validData.hasOwnProperty(key)) {
+      throw new functions.https.HttpsError(
+        'invalid-argument',
+        'Data contains invalid properties'
+      );
+    }
+    if (typeof data[key] !== validData[key]) {
+      throw new functions.https.HttpsError(
+        'invalid-argument',
+        'Data contains invalid property types'
+      );
+    }
+  });
+  return true;
+}
