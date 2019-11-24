@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Input } from './input';
 import { Button } from './button';
@@ -30,20 +30,23 @@ export default ({ firebase, bookId }) => {
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState('');
 
-  useEffect(() => {
-    const unsubscribe = firebase.subscribeToComments(bookId, snapshot => {
+  const subscribeToCommentsCallback = useCallback(() => {
+    return firebase.subscribeToComments(bookId, snapshot => {
       const snapshotComments = [];
 
-      // NB: this is firestore's forEeach() not Array.prototype.forEach()
+      // NB: this is firebase's forEeach() not Array.prototype.forEach()
       snapshot.forEach(doc => {
         snapshotComments.push({ id: doc.id, ...doc.data() });
       });
 
       setComments(snapshotComments);
     });
-
-    return () => unsubscribe();
   }, [firebase, bookId]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToCommentsCallback();
+    return () => unsubscribe();
+  }, [subscribeToCommentsCallback]);
 
   function handleInputChange(event) {
     event.persist();
