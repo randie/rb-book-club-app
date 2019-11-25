@@ -25,15 +25,21 @@ class Firebase {
     return this[timestamp];
   }
 
-  async register({ email, password, username = '' }) {
-    const newUser = await this.auth.createUserWithEmailAndPassword(
-      email,
-      password
-    );
-    return this.db
-      .collection('profiles')
-      .doc(username)
-      .set({ userId: newUser.user.uid });
+  async register({ email, password, username }) {
+    const callable = this.functions.httpsCallable('usernameDoesNotExistYet');
+    const usernameDoesNotExistYet = await callable({ username });
+
+    if (usernameDoesNotExistYet) {
+      const newUser = await this.auth.createUserWithEmailAndPassword(
+        email,
+        password
+      );
+
+      return this.db
+        .collection('profiles')
+        .doc(username)
+        .set({ userId: newUser.user.uid });
+    }
   }
 
   login({ email, password }) {
