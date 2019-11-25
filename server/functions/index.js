@@ -11,24 +11,22 @@ const admin = require('firebase-admin');
 
 admin.initializeApp();
 
-exports.usernameDoesNotExistYet = functions.https.onCall(
-  async (data, context) => {
-    const profile = await admin
-      .firestore()
-      .collection('profiles')
-      .doc(data.username)
-      .get();
+exports.usernameDoesNotExist = functions.https.onCall(async (data, context) => {
+  const profile = await admin
+    .firestore()
+    .collection('profiles')
+    .doc(data.username)
+    .get();
 
-    if (profile.exists) {
-      throw new functions.https.HttpsError(
-        'already-exists',
-        `username ${data.username} already exists`
-      );
-    }
-
-    return true;
+  if (profile.exists) {
+    throw new functions.https.HttpsError(
+      'already-exists',
+      `username ${data.username} already exists`
+    );
   }
-);
+
+  return true;
+});
 
 exports.postComment = functions.https.onCall((data, context) => {
   const validCommentData = { bookId: 'string', text: 'string' };

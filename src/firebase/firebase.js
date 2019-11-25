@@ -26,10 +26,14 @@ class Firebase {
   }
 
   async register({ email, password, username }) {
-    const callable = this.functions.httpsCallable('usernameDoesNotExistYet');
-    const usernameDoesNotExistYet = await callable({ username });
+    const usernameDoesNotExistCallable = this.functions.httpsCallable(
+      'usernameDoesNotExist'
+    );
+    const usernameDoesNotExist = await usernameDoesNotExistCallable({
+      username,
+    });
 
-    if (usernameDoesNotExistYet) {
+    if (usernameDoesNotExist) {
       const newUser = await this.auth.createUserWithEmailAndPassword(
         email,
         password
