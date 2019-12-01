@@ -11,6 +11,7 @@ const admin = require('firebase-admin');
 
 admin.initializeApp();
 
+// TODO: deprecate usernameDoesNotExist
 exports.usernameDoesNotExist = functions.https.onCall(async (data, context) => {
   const profile = await admin
     .firestore()
@@ -26,6 +27,16 @@ exports.usernameDoesNotExist = functions.https.onCall(async (data, context) => {
   }
 
   return true;
+});
+
+exports.usernameExists = functions.https.onCall(async (data, context) => {
+  const profile = await admin
+    .firestore()
+    .collection('profiles')
+    .doc(data.username)
+    .get();
+
+  return profile.exists;
 });
 
 exports.postComment = functions.https.onCall((data, context) => {

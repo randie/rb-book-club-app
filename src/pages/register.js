@@ -36,19 +36,18 @@ const Register = () => {
     setErrorMessage('');
   }
 
-  function isDisabled() {
+  function isSubmitDisabled() {
     return (
       !username || !email || !password || !confirmPassword || !!errorMessage
     );
   }
 
   async function checkUsername() {
-    try {
-      const usernameDoesNotExistCallable = firebase.functions.httpsCallable(
-        'usernameDoesNotExist'
-      );
-      await usernameDoesNotExistCallable({ username });
-    } catch (error) {
+    const usernameExistsCallable = firebase.functions.httpsCallable(
+      'usernameExists'
+    );
+    const { data: usernameExists } = await usernameExistsCallable({ username });
+    if (usernameExists) {
       setErrorMessage(`That username is already taken`);
     }
   }
@@ -95,7 +94,7 @@ const Register = () => {
         minLength={6}
         onChange={handleInputChange}
       />
-      <Button type="submit" block disabled={isDisabled()}>
+      <Button type="submit" block disabled={isSubmitDisabled()}>
         Register
       </Button>
       {errorMessage && <Message error>{`ERROR! ${errorMessage}`}</Message>}
