@@ -10,5 +10,9 @@ export const Button = styled.button`
   &:hover {
     background-color: indigo;
   }
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
   ${props => props.block && 'display: block; width: 100%;'}
 `;

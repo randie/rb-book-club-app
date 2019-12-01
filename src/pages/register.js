@@ -36,6 +36,27 @@ const Register = () => {
     setErrorMessage('');
   }
 
+  function isDisabled() {
+    return (
+      !username || !email || !password || !confirmPassword || !!errorMessage
+    );
+  }
+
+  async function checkUsername() {
+    try {
+      const usernameDoesNotExistCallable = firebase.functions.httpsCallable(
+        'usernameDoesNotExist'
+      );
+      await usernameDoesNotExistCallable({ username });
+    } catch (error) {
+      setErrorMessage(`That username is already taken`);
+    }
+  }
+
+  async function checkEmail() {
+    console.log('>>>', 'register#checkEmail is not implemented yet');
+  }
+
   return (
     <Form onSubmit={handleSubmit}>
       <Input
@@ -45,6 +66,7 @@ const Register = () => {
         placeholder="Username"
         required
         onChange={handleInputChange}
+        onBlur={checkUsername}
       />
       <Input
         type="email"
@@ -53,6 +75,7 @@ const Register = () => {
         placeholder="Email"
         required
         onChange={handleInputChange}
+        onBlur={checkEmail}
       />
       <Input
         type="password"
@@ -72,7 +95,7 @@ const Register = () => {
         minLength={6}
         onChange={handleInputChange}
       />
-      <Button type="submit" block>
+      <Button type="submit" block disabled={isDisabled()}>
         Register
       </Button>
       {errorMessage && <Message error>{`ERROR! ${errorMessage}`}</Message>}

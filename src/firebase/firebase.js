@@ -26,14 +26,12 @@ class Firebase {
   }
 
   async register({ email, password, username }) {
-    const usernameDoesNotExistCallable = this.functions.httpsCallable(
-      'usernameDoesNotExist'
-    );
-    const usernameDoesNotExist = await usernameDoesNotExistCallable({
-      username,
-    });
+    try {
+      const usernameDoesNotExistCallable = this.functions.httpsCallable(
+        'usernameDoesNotExist'
+      );
+      await usernameDoesNotExistCallable({ username });
 
-    if (usernameDoesNotExist) {
       const newUser = await this.auth.createUserWithEmailAndPassword(
         email,
         password
@@ -43,6 +41,8 @@ class Firebase {
         .collection('profiles')
         .doc(username)
         .set({ userId: newUser.user.uid });
+    } catch (error) {
+      throw error;
     }
   }
 
