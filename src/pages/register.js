@@ -20,7 +20,7 @@ const Register = () => {
     if (password === confirmPassword) {
       firebase
         .register({ username, email, password })
-        .then(() => navigate('/'))
+        .then(() => navigate('/login'))
         .catch(error => setErrorMessage(error.message));
     } else {
       setErrorMessage("Passwords don't match.");

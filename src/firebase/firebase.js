@@ -33,13 +33,21 @@ class Firebase {
         throw new Error(`username ${username} is already taken`);
       }
 
+      /*
       const newUser = await this.auth.createUserWithEmailAndPassword(email, password);
 
-      return this.db
+      await this.db
         .collection('profiles')
         .doc(username)
         .set({ userId: newUser.user.uid });
+      */
+
+      //await this.auth.createUserWithEmailAndPassword(email, password);
+      const createProfileCallable = this.functions.httpsCallable('createProfile');
+      await createProfileCallable({ username, email, password });
+      console.log('>>> firebase#register after createProfileCallable()');
     } catch (error) {
+      console.log('>>> firebase#register', { error });
       throw error;
     }
   }

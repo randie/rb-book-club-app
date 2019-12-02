@@ -11,6 +11,60 @@ const admin = require('firebase-admin');
 
 admin.initializeApp();
 
+/*
+exports.createProfile = functions.https.onCall(async (data, context) => {
+  try {
+    const validProfileData = { username: 'string' };
+    if (isAuthenticatedUser(context) && isValidData(data, validProfileData)) {
+      if (await profileExistsAlready(data, context)) {
+        throw new functions.https.HttpsError('already-exists', 'Profile already exists');
+      }
+
+      return admin
+        .firestore()
+        .collection('profiles')
+        .doc(data.username)
+        .set({ userId: context.auth.uid });
+    }
+  } catch (error) {
+    throw error;
+  }
+});
+*/
+exports.createProfile = functions.https.onCall(async (data, context) => {
+  try {
+    const validProfileData = { username: 'string', email: 'string', password: 'string' };
+    if (isValidData(data, validProfileData)) {
+      if (await profileExistsAlready(data, context)) {
+        throw new functions.https.HttpsError('already-exists', 'Profile already exists');
+      }
+
+      const { username, email, password } = data;
+      //const newUser = await admin.auth().createUserWithEmailAndPassword(email, password);
+      const newUser = await admin.auth().createUser({
+        email,
+        emailVerified: false,
+        password,
+        displayName: username,
+        //photoURL: '',
+        disabled: false,
+      });
+      console.log('>>>', { newUser });
+      await admin
+        .firestore()
+        .collection('profiles')
+        .doc(username)
+        .set({ userId: newUser.uid });
+    }
+  } catch (error) {
+    console.log('>>> createProfile', { error, errorInfo: error.errorInfo });
+    throw new functions.https.HttpsError(
+      'already-exists',
+      `email address ${data.email} already exists`
+    );
+  }
+});
+
 exports.usernameExists = functions.https.onCall(async (data, context) => {
   try {
     const profile = await admin
@@ -75,4 +129,32 @@ function isValidData(data, validData) {
     }
   });
   return true;
+}
+
+async function profileExistsAlready(data, context) {
+  const profilesCollection = admin.firestore().collection('profiles');
+
+  let profile;
+
+  // check if there's a profile already for the current user
+  /*
+  profile = await profilesCollection
+    .where('userId', '==', context.auth.uid)
+    .limit(1)
+    .get();
+
+  if (!profile.empty) {
+    return true;
+  }
+  */
+
+  // check if there's a profile already for the given username
+  profile = await profilesCollection.doc(data.username).get();
+
+  if (profile.exists) {
+    return true;
+  }
+
+  console.log('>>>', 'profileExistsAlready => false');
+  return false;
 }
