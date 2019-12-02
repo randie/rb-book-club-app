@@ -37,18 +37,18 @@ const Register = () => {
   }
 
   function isSubmitDisabled() {
-    return (
-      !username || !email || !password || !confirmPassword || !!errorMessage
-    );
+    return !username || !email || !password || !confirmPassword || !!errorMessage;
   }
 
   async function checkUsername() {
-    const usernameExistsCallable = firebase.functions.httpsCallable(
-      'usernameExists'
-    );
-    const { data: usernameExists } = await usernameExistsCallable({ username });
-    if (usernameExists) {
-      setErrorMessage(`That username is already taken`);
+    try {
+      const usernameExistsCallable = firebase.functions.httpsCallable('usernameExists');
+      const { data: usernameExists } = await usernameExistsCallable({ username });
+      if (usernameExists) {
+        setErrorMessage(`username ${username} is already taken`);
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
     }
   }
 

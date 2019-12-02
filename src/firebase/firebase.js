@@ -27,15 +27,13 @@ class Firebase {
 
   async register({ email, password, username }) {
     try {
-      const usernameDoesNotExistCallable = this.functions.httpsCallable(
-        'usernameDoesNotExist'
-      );
-      await usernameDoesNotExistCallable({ username });
+      const usernameExistsCallable = this.functions.httpsCallable('usernameExists');
+      const { data: usernameExists } = await usernameExistsCallable({ username });
+      if (usernameExists) {
+        throw new Error(`username ${username} is already taken`);
+      }
 
-      const newUser = await this.auth.createUserWithEmailAndPassword(
-        email,
-        password
-      );
+      const newUser = await this.auth.createUserWithEmailAndPassword(email, password);
 
       return this.db
         .collection('profiles')

@@ -11,32 +11,18 @@ const admin = require('firebase-admin');
 
 admin.initializeApp();
 
-// TODO: deprecate usernameDoesNotExist
-exports.usernameDoesNotExist = functions.https.onCall(async (data, context) => {
-  const profile = await admin
-    .firestore()
-    .collection('profiles')
-    .doc(data.username)
-    .get();
-
-  if (profile.exists) {
-    throw new functions.https.HttpsError(
-      'already-exists',
-      `username ${data.username} already exists`
-    );
-  }
-
-  return true;
-});
-
 exports.usernameExists = functions.https.onCall(async (data, context) => {
-  const profile = await admin
-    .firestore()
-    .collection('profiles')
-    .doc(data.username)
-    .get();
+  try {
+    const profile = await admin
+      .firestore()
+      .collection('profiles')
+      .doc(data.username)
+      .get();
 
-  return profile.exists;
+    return profile.exists;
+  } catch (error) {
+    throw error;
+  }
 });
 
 exports.postComment = functions.https.onCall((data, context) => {
@@ -65,10 +51,7 @@ exports.postComment = functions.https.onCall((data, context) => {
 
 function isAuthenticatedUser(context) {
   if (!context.auth) {
-    throw new functions.https.HttpsError(
-      'unauthenticated',
-      'ERROR! User is not logged in.'
-    );
+    throw new functions.https.HttpsError('unauthenticated', 'User is not logged in.');
   }
   return true;
 }
@@ -82,10 +65,7 @@ function isValidData(data, validData) {
   }
   Object.keys(data).forEach(key => {
     if (!validData.hasOwnProperty(key)) {
-      throw new functions.https.HttpsError(
-        'invalid-argument',
-        'Data contains invalid properties'
-      );
+      throw new functions.https.HttpsError('invalid-argument', 'Data contains invalid properties');
     }
     if (typeof data[key] !== validData[key]) {
       throw new functions.https.HttpsError(

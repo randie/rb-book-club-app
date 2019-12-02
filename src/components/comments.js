@@ -56,7 +56,10 @@ export default ({ firebase, bookId }) => {
   function handleCommentSubmit(event) {
     event.preventDefault();
     commentText &&
-      firebase.postComment(bookId, commentText).then(() => setCommentText(''));
+      firebase
+        .postComment(bookId, commentText)
+        .then(() => setCommentText(''))
+        .catch(error => window.alert(error.message));
   }
 
   /* Sample comment data
