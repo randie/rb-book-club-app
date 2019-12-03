@@ -35,7 +35,6 @@ class Firebase {
 
       /*
       const newUser = await this.auth.createUserWithEmailAndPassword(email, password);
-
       await this.db
         .collection('profiles')
         .doc(username)
@@ -45,9 +44,7 @@ class Firebase {
       //await this.auth.createUserWithEmailAndPassword(email, password);
       const createProfileCallable = this.functions.httpsCallable('createProfile');
       await createProfileCallable({ username, email, password });
-      console.log('>>> firebase#register after createProfileCallable()');
     } catch (error) {
-      console.log('>>> firebase#register', { error });
       throw error;
     }
   }

@@ -1,8 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
+// Reference: https://firebase.google.com/docs/functions/write-firebase-functions
 //
 // For example:
 // exports.helloWorld = functions.https.onRequest((request, response) => {
@@ -11,7 +10,7 @@ const admin = require('firebase-admin');
 
 admin.initializeApp();
 
-/*
+/* Take 1
 exports.createProfile = functions.https.onCall(async (data, context) => {
   try {
     const validProfileData = { username: 'string' };
@@ -31,6 +30,7 @@ exports.createProfile = functions.https.onCall(async (data, context) => {
   }
 });
 */
+/* Take 2
 exports.createProfile = functions.https.onCall(async (data, context) => {
   try {
     const validProfileData = { username: 'string', email: 'string', password: 'string' };
@@ -57,11 +57,64 @@ exports.createProfile = functions.https.onCall(async (data, context) => {
         .set({ userId: newUser.uid });
     }
   } catch (error) {
-    console.log('>>> createProfile', { error, errorInfo: error.errorInfo });
-    throw new functions.https.HttpsError(
-      'already-exists',
-      `email address ${data.email} already exists`
-    );
+    console.log('>>> createProfile', { error, Error: error.Error });
+    if (!!error.errorInfo) {
+      throw new functions.https.HttpsError('already-exists', error.errorInfo.message);
+    } else {
+      throw new functions.https.HttpsError('already-exists', 'Registration failed!');
+    }
+  }
+});
+*/
+exports.createProfile = functions.https.onCall(async (data, context) => {
+  // NB: The reason there are multiple try-catch blocks instead of a single one
+  // is because the caught error object has a different shape for each error type.
+
+  // check for preconditions: user data is valid and profile does not already exist
+  try {
+    const validUserData = { username: 'string', email: 'string', password: 'string' };
+    isValidData(data, validUserData);
+    await profileExistsAlready(data, context);
+  } catch (error) {
+    throw error;
+  }
+
+  // check if profile already exists
+  /*
+  if (await profileExistsAlready(data, context)) {
+    throw new functions.https.HttpsError('already-exists', 'Profile already exists');
+  }
+  */
+
+  const { username, email, password } = data;
+  let newUser;
+
+  // create user account
+  try {
+    newUser = await admin.auth().createUser({
+      email,
+      emailVerified: false,
+      password,
+      displayName: username,
+      //photoURL: '',
+      disabled: false,
+    });
+  } catch (error) {
+    console.log('>>>', { error });
+    throw new functions.https.HttpsError('unknown', error.errorInfo.message);
+  }
+
+  // create user profile
+  try {
+    console.log('>>>', { newUser });
+    await admin
+      .firestore()
+      .collection('profiles')
+      .doc(username)
+      .set({ userId: newUser.uid });
+  } catch (error) {
+    console.log('>>>', { error });
+    throw new functions.https.HttpsError('unknown', 'Failed to create user profile');
   }
 });
 
@@ -144,17 +197,18 @@ async function profileExistsAlready(data, context) {
     .get();
 
   if (!profile.empty) {
-    return true;
+    console.log('>>>', 'profileExistsAlready => false');
+    throw new functions.https.HttpsError('already-exists', 'Profile already exists for current user');
   }
   */
 
-  // check if there's a profile already for the given username
+  // check if there's a profile already for this username
   profile = await profilesCollection.doc(data.username).get();
-
   if (profile.exists) {
-    return true;
+    console.log('>>>', 'profileExistsAlready => false');
+    throw new functions.https.HttpsError(
+      'already-exists',
+      `username ${data.username} already exists`
+    );
   }
-
-  console.log('>>>', 'profileExistsAlready => false');
-  return false;
 }
