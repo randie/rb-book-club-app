@@ -10,81 +10,19 @@ const admin = require('firebase-admin');
 
 admin.initializeApp();
 
-/* Take 1
-exports.createProfile = functions.https.onCall(async (data, context) => {
-  try {
-    const validProfileData = { username: 'string' };
-    if (isAuthenticatedUser(context) && isValidData(data, validProfileData)) {
-      if (await profileExistsAlready(data, context)) {
-        throw new functions.https.HttpsError('already-exists', 'Profile already exists');
-      }
-
-      return admin
-        .firestore()
-        .collection('profiles')
-        .doc(data.username)
-        .set({ userId: context.auth.uid });
-    }
-  } catch (error) {
-    throw error;
-  }
-});
-*/
-/* Take 2
-exports.createProfile = functions.https.onCall(async (data, context) => {
-  try {
-    const validProfileData = { username: 'string', email: 'string', password: 'string' };
-    if (isValidData(data, validProfileData)) {
-      if (await profileExistsAlready(data, context)) {
-        throw new functions.https.HttpsError('already-exists', 'Profile already exists');
-      }
-
-      const { username, email, password } = data;
-      //const newUser = await admin.auth().createUserWithEmailAndPassword(email, password);
-      const newUser = await admin.auth().createUser({
-        email,
-        emailVerified: false,
-        password,
-        displayName: username,
-        //photoURL: '',
-        disabled: false,
-      });
-      console.log('>>>', { newUser });
-      await admin
-        .firestore()
-        .collection('profiles')
-        .doc(username)
-        .set({ userId: newUser.uid });
-    }
-  } catch (error) {
-    console.log('>>> createProfile', { error, Error: error.Error });
-    if (!!error.errorInfo) {
-      throw new functions.https.HttpsError('already-exists', error.errorInfo.message);
-    } else {
-      throw new functions.https.HttpsError('already-exists', 'Registration failed!');
-    }
-  }
-});
-*/
-exports.createProfile = functions.https.onCall(async (data, context) => {
+exports.registerUser = functions.https.onCall(async (data, context) => {
   // NB: The reason there are multiple try-catch blocks instead of a single one
-  // is because the caught error object has a different shape for each error type.
+  // is because the error object has a different shape for each error case.
 
   // check for preconditions: user data is valid and profile does not already exist
   try {
     const validUserData = { username: 'string', email: 'string', password: 'string' };
     isValidData(data, validUserData);
-    await profileExistsAlready(data, context);
+
+    await profileDoesNotExistYet(data, context);
   } catch (error) {
     throw error;
   }
-
-  // check if profile already exists
-  /*
-  if (await profileExistsAlready(data, context)) {
-    throw new functions.https.HttpsError('already-exists', 'Profile already exists');
-  }
-  */
 
   const { username, email, password } = data;
   let newUser;
@@ -184,7 +122,7 @@ function isValidData(data, validData) {
   return true;
 }
 
-async function profileExistsAlready(data, context) {
+async function profileDoesNotExistYet(data, context) {
   const profilesCollection = admin.firestore().collection('profiles');
 
   let profile;
@@ -197,7 +135,6 @@ async function profileExistsAlready(data, context) {
     .get();
 
   if (!profile.empty) {
-    console.log('>>>', 'profileExistsAlready => false');
     throw new functions.https.HttpsError('already-exists', 'Profile already exists for current user');
   }
   */
@@ -205,7 +142,6 @@ async function profileExistsAlready(data, context) {
   // check if there's a profile already for this username
   profile = await profilesCollection.doc(data.username).get();
   if (profile.exists) {
-    console.log('>>>', 'profileExistsAlready => false');
     throw new functions.https.HttpsError(
       'already-exists',
       `username ${data.username} already exists`

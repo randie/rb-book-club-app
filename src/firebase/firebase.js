@@ -27,23 +27,17 @@ class Firebase {
 
   async register({ email, password, username }) {
     try {
+      // NB: Using firebase cloud function here because we can't
+      // query the db directly without being logged in and at this
+      // point no user is logged in yet.
       const usernameExistsCallable = this.functions.httpsCallable('usernameExists');
       const { data: usernameExists } = await usernameExistsCallable({ username });
       if (usernameExists) {
         throw new Error(`username ${username} is already taken`);
       }
 
-      /*
-      const newUser = await this.auth.createUserWithEmailAndPassword(email, password);
-      await this.db
-        .collection('profiles')
-        .doc(username)
-        .set({ userId: newUser.user.uid });
-      */
-
-      //await this.auth.createUserWithEmailAndPassword(email, password);
-      const createProfileCallable = this.functions.httpsCallable('createProfile');
-      await createProfileCallable({ username, email, password });
+      const registerUserCallable = this.functions.httpsCallable('registerUser');
+      await registerUserCallable({ username, email, password });
     } catch (error) {
       throw error;
     }
