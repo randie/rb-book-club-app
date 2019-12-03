@@ -1,7 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { navigate } from 'gatsby';
 import { FirebaseContext } from '../firebase';
 import { Form, Input, Button, Message } from '../components';
+
+let isMounted;
 
 const Register = () => {
   const { firebase } = useContext(FirebaseContext);
@@ -14,6 +16,13 @@ const Register = () => {
   });
   const { username, email, password, confirmPassword } = formValues;
 
+  useEffect(() => {
+    isMounted = true;
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   function handleSubmit(event) {
     event.preventDefault();
 
@@ -24,7 +33,7 @@ const Register = () => {
           window.alert('Registration successful. Please log in.');
           navigate('/login');
         })
-        .catch(error => setErrorMessage(error.message));
+        .catch(error => isMounted && setErrorMessage(error.message));
     } else {
       setErrorMessage("Passwords don't match.");
     }
@@ -48,10 +57,10 @@ const Register = () => {
       const usernameExistsCallable = firebase.functions.httpsCallable('usernameExists');
       const { data: usernameExists } = await usernameExistsCallable({ username });
       if (usernameExists) {
-        setErrorMessage(`username ${username} is already taken`);
+        isMounted && setErrorMessage(`username ${username} is already taken`);
       }
     } catch (error) {
-      setErrorMessage(error.message);
+      isMounted && setErrorMessage(error.message);
     }
   }
 
