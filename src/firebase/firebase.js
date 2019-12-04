@@ -81,6 +81,11 @@ class Firebase {
     const postCommentCallable = this.functions.httpsCallable('postComment');
     return postCommentCallable({ bookId, text });
   }
+
+  addAuthor(name) {
+    const addAuthorCallable = this.functions.httpsCallable('addAuthor');
+    return addAuthorCallable({ name });
+  }
 }
 
 export default app => new Firebase(app);

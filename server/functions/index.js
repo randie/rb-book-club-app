@@ -10,6 +10,36 @@ const admin = require('firebase-admin');
 
 admin.initializeApp();
 
+exports.addAuthor = functions.https.onCall(async (data, context) => {
+  try {
+    // check preconditions
+    isAuthenticatedUser(context);
+    isAdminUser(context);
+    const validAuthorData = { name: 'string' };
+    isValidData(data, validAuthorData);
+
+    // check that this author doesn't already exist
+    const author = await admin
+      .firestore()
+      .collection('authors')
+      .where('name', '==', data.name) // TODO: make this case-insensitive
+      .limit(1)
+      .get();
+
+    if (!author.empty) {
+      throw new functions.https.HttpsError('already-exists', `Author ${data.name} already exists`);
+    }
+
+    // and finally, add author
+    return admin
+      .firestore()
+      .collection('authors')
+      .add({ name: data.name });
+  } catch (error) {
+    throw error;
+  }
+});
+
 exports.registerUser = functions.https.onCall(async (data, context) => {
   // NB: The reason there are multiple try-catch blocks instead of a single one
   // is because the error object has a different shape for each error case.
@@ -104,7 +134,14 @@ exports.postComment = functions.https.onCall((data, context) => {
 
 function isAuthenticatedUser(context) {
   if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User is not logged in.');
+    throw new functions.https.HttpsError('unauthenticated', 'User must be logged in.');
+  }
+  return true;
+}
+
+function isAdminUser(context) {
+  if (!context.auth.token.admin) {
+    throw new functions.https.HttpsError('permission-denied', 'User must be an admin.');
   }
   return true;
 }
