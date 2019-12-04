@@ -29,7 +29,8 @@ function useAuth() {
           setCurrentUser(null);
         } else {
           const username = await firebaseInstance.getUsername(user.uid);
-          setCurrentUser({ ...user, username });
+          const token = await firebaseInstance.auth.currentUser.getIdTokenResult(true); // true => forceRefresh
+          setCurrentUser({ ...user, username, isAdmin: token.claims.admin });
         }
         setIsLoading(false);
       });

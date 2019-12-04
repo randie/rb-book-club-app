@@ -37,14 +37,22 @@ exports.registerUser = functions.https.onCall(async (data, context) => {
       //photoURL: '',
       disabled: false,
     });
+
+    // NB: accounts.admin firebase environment variable must have
+    // already been set from the command line, like so for example:
+    //   firebase functions:config:set accounts.admin="admin@example.com"
+    const accounts = functions.config().accounts;
+    if (accounts && newUser.email === accounts.admin) {
+      await admin.auth().setCustomUserClaims(newUser.uid, { admin: true });
+    }
   } catch (error) {
     console.log('>>>', { error });
-    throw new functions.https.HttpsError('unknown', error.errorInfo.message);
+    const message = (error.errorInfo && error.errorInfo.message) || 'Failed to create user account';
+    throw new functions.https.HttpsError('unknown', message);
   }
 
   // create user profile
   try {
-    console.log('>>>', { newUser });
     await admin
       .firestore()
       .collection('profiles')
