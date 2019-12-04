@@ -74,6 +74,14 @@ const Header = ({ siteTitle }) => {
               <>
                 Hello, {`${currentUser.username || currentUser.email}`}!
                 <Divider />
+                {currentUser.isAdmin && (
+                  <>
+                    <Link to="/add-author">Add author</Link>
+                    <Divider />
+                    <Link to="/add-book">Add book</Link>
+                    <Divider />
+                  </>
+                )}
                 <LogoutLink onClick={handleLogoutClick}>Logout</LogoutLink>
               </>
             )}
