@@ -69,7 +69,7 @@ const Register = () => {
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} title="Register a new user">
       <Input
         type="username"
         name="username"
@@ -107,7 +107,7 @@ const Register = () => {
         onChange={handleInputChange}
       />
       <Button type="submit" block disabled={isSubmitDisabled()}>
-        Register
+        Submit
       </Button>
       {errorMessage && <Message error>{`ERROR! ${errorMessage}`}</Message>}
     </Form>

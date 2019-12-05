@@ -29,10 +29,10 @@ const AddAuthor = () => {
   };
 
   return (
-    <Form onSubmit={addAuthor}>
-      <Input placeholder="Author name" value={authorName} onChange={handleInputChange} />
+    <Form onSubmit={addAuthor} title="Add a new author">
+      <Input placeholder="Author's name" value={authorName} onChange={handleInputChange} />
       <Button type="submit" block disabled={!authorName}>
-        Add author
+        Submit
       </Button>
       {successMessage && <Message success>{successMessage}</Message>}
       {errorMessage && <Message error>{`ERROR! ${errorMessage}`}</Message>}

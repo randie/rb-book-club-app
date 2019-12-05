@@ -30,7 +30,7 @@ const Login = () => {
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} title="Login">
       <Input type="email" placeholder="Email" value={email} onChange={handleEmailChange} required />
       <Input
         type="password"
@@ -40,7 +40,7 @@ const Login = () => {
         required
       />
       <Button type="submit" block>
-        Login
+        Submit
       </Button>
       {errorMessage && <Message error>{`ERROR! ${errorMessage}`}</Message>}
     </Form>
