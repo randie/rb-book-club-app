@@ -13,7 +13,7 @@ const AddBook = () => {
   const [title, setTitle] = useState('');
   const [authorId, setAuthorId] = useState('');
   const [summary, setSummary] = useState('');
-  const [image, setImage] = useState('');
+  const [imageFile, setImageFile] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -22,7 +22,7 @@ const AddBook = () => {
     // not have one yet at this point so check if it exists first
     if (firebase) {
       firebase.getAuthors().then(snapshot => {
-        const availableAuthors = [];
+        const availableAuthors = [{ id: '-1', name: 'Select author' }];
         // NB: this is firebase's forEeach() not Array.prototype.forEach()
         snapshot.forEach(doc => {
           availableAuthors.push({ id: doc.id, ...doc.data() });
@@ -34,7 +34,7 @@ const AddBook = () => {
 
   useEffect(() => {
     fileReader.addEventListener('load', () => {
-      setImage(fileReader.result);
+      setImageFile(fileReader.result);
     });
   }, []);
 
@@ -53,45 +53,43 @@ const AddBook = () => {
     setSummary(event.target.value);
   };
 
-  const handleImageChange = event => {
+  const handleImageFileChange = event => {
     event.persist();
     fileReader.readAsDataURL(event.target.files[0]);
   };
 
   const addBook = event => {
     event.preventDefault();
-    console.log('>>>', { title, authorId, summary, image });
+    console.log('>>>', { title, authorId, summary, imageFile });
   };
 
   return (
-    <>
-      <Form onSubmit={addBook} title="Add a new book">
-        <label htmlFor="title">Book title</label>
-        <Input id="title" placeholder="Title" value={title} onChange={handleTitleChange} />
+    <Form onSubmit={addBook} title="Add a new book">
+      <label htmlFor="title">Book title</label>
+      <Input id="title" placeholder="Title" value={title} onChange={handleTitleChange} />
 
-        <label htmlFor="author-id">Author</label>
-        <select id="author-id" value={authorId} onChange={handleAuthorChange}>
-          {authors.map(a => (
-            <option key={a.id} value={a.id}>
-              {a.name}
-            </option>
-          ))}
-        </select>
+      <label htmlFor="author-id">Author</label>
+      <select id="author-id" value={authorId} onChange={handleAuthorChange}>
+        {authors.map(a => (
+          <option key={a.id} value={a.id}>
+            {a.name}
+          </option>
+        ))}
+      </select>
 
-        <label htmlFor="summary">Summary</label>
-        <Input id="summary" placeholder="Summary" value={summary} onChange={handleSummaryChange} />
+      <label htmlFor="summary">Summary</label>
+      <Input id="summary" placeholder="Summary" value={summary} onChange={handleSummaryChange} />
 
-        <label htmlFor="book-cover-image">Book cover image</label>
-        <Input id="book-cover-image" type="file" onChange={handleImageChange} />
+      <label htmlFor="image-file">Book cover image</label>
+      <Input id="image-file" type="file" onChange={handleImageFileChange} />
 
-        <Button type="submit" block disabled={!title || !authorId || !summary || !image}>
-          Submit
-        </Button>
+      <Button type="submit" block disabled={!title || !authorId || !summary || !imageFile}>
+        Submit
+      </Button>
 
-        {successMessage && <Message success>{successMessage}</Message>}
-        {errorMessage && <Message error>{`ERROR! ${errorMessage}`}</Message>}
-      </Form>
-    </>
+      {successMessage && <Message success>{successMessage}</Message>}
+      {errorMessage && <Message error>{`ERROR! ${errorMessage}`}</Message>}
+    </Form>
   );
 };
 
