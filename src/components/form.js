@@ -10,6 +10,18 @@ const FormContainer = styled.div`
     text-align: center;
     color: #666;
   }
+
+  form {
+    select {
+      margin-bottom: 0.5rem;
+      height: 2.25rem;
+      width: 100%;
+    }
+    label {
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+  }
 `;
 
 export const Form = ({ title, onSubmit, children }) => {

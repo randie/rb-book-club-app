@@ -86,6 +86,10 @@ class Firebase {
     const addAuthorCallable = this.functions.httpsCallable('addAuthor');
     return addAuthorCallable({ name });
   }
+
+  getAuthors() {
+    return this.db.collection('authors').get();
+  }
 }
 
 export default app => new Firebase(app);

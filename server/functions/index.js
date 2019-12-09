@@ -44,12 +44,12 @@ exports.registerUser = functions.https.onCall(async (data, context) => {
   // NB: The reason there are multiple try-catch blocks instead of a single one
   // is because the error object has a different shape for each error case.
 
-  // check for preconditions: user data is valid and profile does not already exist
+  // check for preconditions: profile does not already exist and user data is valid
   try {
+    await profileDoesNotExistYet(data, context);
+
     const validUserData = { username: 'string', email: 'string', password: 'string' };
     isValidData(data, validUserData);
-
-    await profileDoesNotExistYet(data, context);
   } catch (error) {
     throw error;
   }
