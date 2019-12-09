@@ -53,6 +53,7 @@ const Register = () => {
   }
 
   async function checkUsername() {
+    if (!username) return;
     try {
       const usernameExistsCallable = firebase.functions.httpsCallable('usernameExists');
       const { data: usernameExists } = await usernameExistsCallable({ username });
