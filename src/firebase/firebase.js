@@ -82,9 +82,9 @@ class Firebase {
     return postCommentCallable({ bookId, text });
   }
 
-  addAuthor(name) {
-    const addAuthorCallable = this.functions.httpsCallable('addAuthor');
-    return addAuthorCallable({ name });
+  createAuthor(name) {
+    const createAuthorCallable = this.functions.httpsCallable('createAuthor');
+    return createAuthorCallable({ name });
   }
 
   getAuthors() {

@@ -18,7 +18,7 @@ const AddAuthor = () => {
   const addAuthor = event => {
     event.preventDefault();
     firebase
-      .addAuthor(authorName)
+      .createAuthor(authorName)
       .then(() => {
         setSuccessMessage(`Author ${authorName} successfully added`);
         setAuthorName('');

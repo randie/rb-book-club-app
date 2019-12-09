@@ -10,7 +10,7 @@ const admin = require('firebase-admin');
 
 admin.initializeApp();
 
-exports.addAuthor = functions.https.onCall(async (data, context) => {
+exports.createAuthor = functions.https.onCall(async (data, context) => {
   try {
     // check preconditions
     isAuthenticatedUser(context);
