@@ -90,6 +90,11 @@ class Firebase {
   getAuthors() {
     return this.db.collection('authors').get();
   }
+
+  createBook(book) {
+    const createBookCallable = this.functions.httpsCallable('createBook');
+    return createBookCallable(book);
+  }
 }
 
 export default app => new Firebase(app);

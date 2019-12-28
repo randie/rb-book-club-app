@@ -1,5 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const mimeTypes = require('mimetypes');
 
 // Reference: https://firebase.google.com/docs/functions/write-firebase-functions
 //
@@ -40,13 +41,55 @@ exports.createAuthor = functions.https.onCall(async (data, context) => {
   }
 });
 
+exports.createBook = functions.https.onCall(async (data, context) => {
+  const { title, authorId, summary, imageBlob } = data;
+
+  // check preconditions
+  isAuthenticatedUser(context);
+  isAdminUser(context);
+  const validBookData = {
+    title: 'string',
+    authorId: 'string',
+    summary: 'string',
+    imageBlob: 'string',
+  };
+  isValidData(data, validBookData);
+
+  const mimeType = imageBlob.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/)[1];
+  const base64EncodedImageString = imageBlob.replace(/^data:image\/\w+;base64,/, '');
+  const imageBuffer = new Buffer(base64EncodedImageString, 'base64');
+
+  const filename = `bookCovers/${title}.${mimeTypes.detectExtension(mimeType)}`;
+  const file = admin
+    .storage()
+    .bucket()
+    .file(filename);
+  await file.save(imageBuffer, { contentType: 'image/jpeg' });
+  const fileUrl = await file
+    .getSignedUrl({ action: 'read', expires: '03-09-2491' })
+    .then(urls => urls[0]);
+
+  return admin
+    .firestore()
+    .collection('books')
+    .add({
+      title,
+      summary,
+      imageUrl: fileUrl,
+      author: admin
+        .firestore()
+        .collection('authors')
+        .doc(authorId),
+    });
+});
+
 exports.registerUser = functions.https.onCall(async (data, context) => {
   // NB: The reason there are multiple try-catch blocks instead of a single one
   // is because the error object has a different shape for each error case.
 
   // check for preconditions: profile does not already exist and user data is valid
   try {
-    await profileDoesNotExistYet(data, context);
+    await profileDoesNotExist(data, context);
 
     const validUserData = { username: 'string', email: 'string', password: 'string' };
     isValidData(data, validUserData);
@@ -167,7 +210,7 @@ function isValidData(data, validData) {
   return true;
 }
 
-async function profileDoesNotExistYet(data, context) {
+async function profileDoesNotExist(data, context) {
   const profilesCollection = admin.firestore().collection('profiles');
 
   let profile;

@@ -13,7 +13,7 @@ const AddBook = () => {
   const [title, setTitle] = useState('');
   const [authorId, setAuthorId] = useState('');
   const [summary, setSummary] = useState('');
-  const [imageFile, setImageFile] = useState('');
+  const [imageBlob, setImageBlob] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -34,7 +34,7 @@ const AddBook = () => {
 
   useEffect(() => {
     fileReader.addEventListener('load', () => {
-      setImageFile(fileReader.result);
+      setImageBlob(fileReader.result);
     });
   }, []);
 
@@ -60,7 +60,20 @@ const AddBook = () => {
 
   const addBook = event => {
     event.preventDefault();
-    console.log('>>>', { title, authorId, summary, imageFile });
+
+    firebase
+      .createBook({ title, authorId, summary, imageBlob })
+      .then(() => {
+        setSuccessMessage(`Book ${title} successfully added`);
+        setTitle('');
+        setAuthorId('');
+        setSummary('');
+        setImageBlob('');
+      })
+      .catch(error => {
+        console.log('>>>', { error });
+        setErrorMessage(error.message);
+      });
   };
 
   return (
@@ -83,7 +96,7 @@ const AddBook = () => {
       <label htmlFor="image-file">Book cover image</label>
       <Input id="image-file" type="file" onChange={handleImageFileChange} />
 
-      <Button type="submit" block disabled={!title || !authorId || !summary || !imageFile}>
+      <Button type="submit" block disabled={!title || !authorId || !summary || !imageBlob}>
         Submit
       </Button>
 
