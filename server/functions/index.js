@@ -55,32 +55,33 @@ exports.createBook = functions.https.onCall(async (data, context) => {
   };
   isValidData(data, validBookData);
 
+  // save image to firebase storage
   const mimeType = imageBlob.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/)[1];
   const base64EncodedImageString = imageBlob.replace(/^data:image\/\w+;base64,/, '');
   const imageBuffer = new Buffer(base64EncodedImageString, 'base64');
-
-  const filename = `bookCovers/${title}.${mimeTypes.detectExtension(mimeType)}`;
+  const name = title
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-');
+  const filename = `images/${name}.${mimeTypes.detectExtension(mimeType)}`;
   const file = admin
     .storage()
     .bucket()
     .file(filename);
   await file.save(imageBuffer, { contentType: 'image/jpeg' });
-  const fileUrl = await file
+
+  const imageUrl = await file
     .getSignedUrl({ action: 'read', expires: '03-09-2491' })
     .then(urls => urls[0]);
+  const author = admin
+    .firestore()
+    .collection('authors')
+    .doc(authorId);
 
   return admin
     .firestore()
     .collection('books')
-    .add({
-      title,
-      summary,
-      imageUrl: fileUrl,
-      author: admin
-        .firestore()
-        .collection('authors')
-        .doc(authorId),
-    });
+    .add({ title, summary, imageUrl, author });
 });
 
 exports.registerUser = functions.https.onCall(async (data, context) => {
